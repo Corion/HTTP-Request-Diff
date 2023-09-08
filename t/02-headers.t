@@ -28,6 +28,13 @@ for my $block (@tests) {
     my ($name_v)  = $reference =~ m!^(.*?)$!;
     my $actual    = $block->{actual};
     my $result    = Load($block->{diff}) // [];
+
+    for( $result->@* ) {
+        $_->{actual} =~ s/\s+\z//
+            if $_->{actual};
+        $_->{reference} =~ s/\s+\z//
+            if $_->{reference};
+    }
     my $name      = $block->{name} // $name_v;
 
     my $todo;
@@ -39,7 +46,9 @@ for my $block (@tests) {
         @constructor = map { %$_ } @{ Load( $block->{constructor}) };
     }
 
-    my @diff = HTTP::Request::Diff->new(reference => $reference, @constructor)->diff( $actual );
+    my @diff = HTTP::Request::Diff
+                   ->new(reference => $reference, @constructor)
+                   ->diff( $actual );
     is \@diff, $result, $name
         or diag Dumper \@diff;
 };
@@ -176,9 +185,14 @@ Content-Length: 0
 --- diff
 - kind: value
   type: request.header_order
-  reference: Content-Length, Accept-Encoding
-  actual: Accept-Encoding, Content-Length
-
+  reference: |
+    Content-Length
+    Accept-Encoding
+    <missing>
+  actual: |
+    <missing>
+    Accept-Encoding
+    Content-Length
 ===
 --- name
 Handle/ignore different form boundaries

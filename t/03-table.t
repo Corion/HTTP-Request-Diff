@@ -58,3 +58,36 @@ GET /foo HTTP/1.1
 | Type     | Reference | Actual |
 | uri.path | /         | /foo   |
 +----------+-----------+--------+
+===
+--- name
+Missing fields
+--- reference
+GET / HTTP/1.1
+Accept-Language: fi
+
+
+--- actual
+GET / HTTP/1.1
+--- diff
++-------------------------+-----------+-----------+
+| Type                    | Reference | Actual    |
+| headers.Accept-Language | fi        | <missing> |
++-------------------------+-----------+-----------+
+===
+--- name
+UTF-8 stuff
+--- reference
+GET / HTTP/1.1
+Content-Charset: UTF-8
+
+Ümloud
+--- actual
+GET / HTTP/1.1
+Content-Charset: UTF-8
+
+Umloud
+--- diff
++-----------------+-----------+--------+
+| Type            | Reference | Actual |
+| request.content | Ümloud    | Umloud |
++-----------------+-----------+--------+

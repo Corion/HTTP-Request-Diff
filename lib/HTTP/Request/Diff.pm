@@ -6,8 +6,9 @@ our $VERSION = '0.01';
 
 use feature 'signatures';
 no warnings 'experimental::signatures';
+use Algorithm::Diff;
 use Carp 'croak';
-use List::Util 'pairs', 'uniq';
+use List::Util 'pairs', 'uniq', 'max';
 use CGI::Tiny::Multipart 'parse_multipart_form_data';
 
 =head1 NAME
@@ -317,32 +318,51 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
             };
 
         } elsif( ref $ref_v ) {
-            # Here we have a list of values
-            # We would like a better comparison here instead of just size/order
-            # or rather, a better diff...
-            no warnings; # in case we have undef somewhere, also for stringification
+            # Here we have a list of values, let's check if the lists
+            # of values match
 
-            if( @$ref_v != @$actual_v ) {
-                # perform a better diff...
-                #my %count;
-                #$count{$_}++ for (@$ref_v);
-                #$count{$_}-- for (@$actual_v);
+            my $diff = Algorithm::Diff->new( $ref_v, $actual_v );
+            my $is_diff;
+            my @ref;
+            my @act;
 
+            while( $diff->Next() ) {
+                if( $diff->Same() ) {
+                    push @ref, $diff->Items(1);
+                    push @act, $diff->Items(2);
+
+                } elsif( !$diff->Items(2) ) {
+                    push @ref, $diff->Items(1);
+                    push @act, map { '<missing>' } $diff->Items(1);
+                    $is_diff = 1;
+
+                } elsif( !$diff->Items(1) ) {
+                    push @ref, map { '<missing>' } $diff->Items(2);
+                    push @act, $diff->Items(2);
+                    $is_diff = 1;
+
+                } else {
+                    my $count = max( scalar $diff->Items(1), scalar $diff->Items(2));
+                    push @ref, $diff->Items(1);
+                    push @ref, (undef) x (scalar($diff->Items(2)) - $count);
+                    push @act, $diff->Items(2);
+                    push @act, (undef) x (scalar($diff->Items(1)) - $count);
+
+                    $is_diff = 1;
+                }
+            };
+
+            if( $is_diff ) {
+                # Do we really want to downconvert to strings?!
+                my $ref_diff = join "\n", @ref;
+                my $actual_diff = join "\n", @act;
                 push @diff, {
-                    reference => @$ref_v == 0 ? undef : join( ", ", @$ref_v ),
-                    actual => @$actual_v == 0 ? undef : join( ", ", @$actual_v ),
-                    type => sprintf( '%s.%s', @$p ),
-                    kind => 'missing',
-                };
-
-            } elsif( "@$ref_v" ne "@$actual_v" ) {
-                push @diff, {
-                    reference => join( ", ", @$ref_v ),,
-                    actual => join( ", ", @$actual_v ),,
+                    reference => $ref_diff,
+                    actual => $actual_diff,
                     type => sprintf( '%s.%s', @$p ),
                     kind => 'value',
                 };
-            }
+            };
 
         } elsif( !defined $ref_v and !defined $actual_v ) {
             # neither value exists
@@ -373,7 +393,12 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
 
   my @diff = $diff->diff( $request1, $request2 );
   print $diff->as_table( @diff );
-  #
+  # +-----------------+-----------+--------+
+  # | Type            | Reference | Actual |
+  # | request.content | Ümloud    | Umloud |
+  # +-----------------+-----------+--------+
+
+Renders a diff as a table, using L<Text::Table::Any>.
 
 =cut
 
@@ -384,7 +409,10 @@ sub as_table($self,@diff) {
         Text::Table::Any::generate_table(
             rows => [
                 ['Type', 'Reference', 'Actual'],
-                map {[ $_->{type}, $_->{reference}, $_->{actual} ]} @diff
+                map {[ $_->{type},
+                       $_->{reference} // '<missing>',
+                       $_->{actual} // '<missing>'
+                    ]} @diff
             ],
         );
     };

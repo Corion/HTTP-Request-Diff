@@ -52,6 +52,7 @@ my %module = (
     PREREQ_PM => {
         'Moo' => '2',
         'Carp' => 0,
+        'Algorithm::Diff' => 0,
         'List::Util' => 0,
         'HTTP::Request' => 0,
         'CGI::Tiny::Multipart' => 0,

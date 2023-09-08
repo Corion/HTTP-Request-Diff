@@ -22,6 +22,7 @@ no_index:
     - t
     - inc
 requires:
+  Algorithm::Diff: '0'
   CGI::Tiny::Multipart: '0'
   Carp: '0'
   HTTP::Request: '0'
