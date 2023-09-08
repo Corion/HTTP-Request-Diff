@@ -11,6 +11,8 @@ use Carp 'croak';
 use List::Util 'pairs', 'uniq', 'max';
 use CGI::Tiny::Multipart 'parse_multipart_form_data';
 
+=encoding utf-8
+
 =head1 NAME
 
 HTTP::Request::Diff - create diffs between HTTP request
