@@ -122,6 +122,8 @@ has 'canonicalize' => (
 
 Arrayref of things to compare.
 
+=back
+
 =cut
 
 has 'compare' => (
