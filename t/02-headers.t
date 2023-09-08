@@ -185,14 +185,14 @@ Content-Length: 0
 --- diff
 - kind: value
   type: request.header_order
-  reference: |
-    Content-Length
-    Accept-Encoding
-    <missing>
-  actual: |
-    <missing>
-    Accept-Encoding
-    Content-Length
+  reference:
+  - Content-Length
+  - Accept-Encoding
+  - ~
+  actual:
+  - ~
+  - Accept-Encoding
+  - Content-Length
 ===
 --- name
 Handle/ignore different form boundaries
@@ -266,5 +266,7 @@ e
 --- diff
 - kind: value
   type: form.c
-  reference: d
-  actual: e
+  reference:
+  - d
+  actual:
+  - e

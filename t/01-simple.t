@@ -45,13 +45,13 @@ or diag Dumper \@d;
 
 @d = HTTP::Request::Diff->new->diff( $get, $query );
 is \@d, [
-    { type => 'query.foo',   reference => undef, actual => 'bar', kind => 'missing' },
+    { type => 'query.foo',   reference => [undef], actual => ['bar'], kind => 'missing' },
 ], "Query difference gets detected"
 or diag Dumper \@d;
 
 @d = HTTP::Request::Diff->new->diff( $query, $query2 );
 is \@d, [
-    { type => 'query.foo',   reference => 'bar', actual => 'baz', kind => 'value' },
+    { type => 'query.foo',   reference => ['bar'], actual => ['baz'], kind => 'value' },
 ], "Query difference gets detected"
 or diag Dumper \@d;
 

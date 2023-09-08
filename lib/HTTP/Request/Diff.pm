@@ -326,9 +326,8 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
         } elsif( ref $ref_v ) {
             # Here we have a list of values, let's check if the lists
             # of values match
-
             my $diff = Algorithm::Diff->new( $ref_v, $actual_v );
-            my $is_diff;
+            my $diff_type;
             my @ref;
             my @act;
 
@@ -339,13 +338,13 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
 
                 } elsif( !$diff->Items(2) ) {
                     push @ref, $diff->Items(1);
-                    push @act, map { '<missing>' } $diff->Items(1);
-                    $is_diff = 1;
+                    push @act, (undef) x scalar($diff->Items(1));
+                    $diff_type //= 'missing';
 
                 } elsif( !$diff->Items(1) ) {
-                    push @ref, map { '<missing>' } $diff->Items(2);
+                    push @ref, (undef) x scalar($diff->Items(2));
                     push @act, $diff->Items(2);
-                    $is_diff = 1;
+                    $diff_type //= 'missing';
 
                 } else {
                     my $count = max( scalar $diff->Items(1), scalar $diff->Items(2));
@@ -354,19 +353,21 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
                     push @act, $diff->Items(2);
                     push @act, (undef) x (scalar($diff->Items(1)) - $count);
 
-                    $is_diff = 1;
+                    $diff_type = 'value';
                 }
             };
 
-            if( $is_diff ) {
+            if( $diff_type ) {
                 # Do we really want to downconvert to strings?!
-                my $ref_diff = join "\n", @ref;
-                my $actual_diff = join "\n", @act;
+                #my $ref_diff = join "\n", @ref;
+                #my $actual_diff = join "\n", @act;
+                my $ref_diff = \@ref;
+                my $actual_diff = \@act;
                 push @diff, {
                     reference => $ref_diff,
                     actual => $actual_diff,
                     type => sprintf( '%s.%s', @$p ),
-                    kind => 'value',
+                    kind => $diff_type,
                 };
             };
 
@@ -416,8 +417,8 @@ sub as_table($self,@diff) {
             rows => [
                 ['Type', 'Reference', 'Actual'],
                 map {[ $_->{type},
-                       $_->{reference} // '<missing>',
-                       $_->{actual} // '<missing>'
+                       ref $_->{reference} ? join "\n", map { $_ // '<missing>' } $_->{reference}->@* : $_->{reference} // '<missing>',
+                       ref $_->{actual} ? join "\n", map { $_ // '<missing>' } $_->{actual}->@* : $_->{actual} // '<missing>',
                     ]} @diff
             ],
         );
