@@ -5,7 +5,7 @@
 
 # NAME
 
-HTTP::Request::Diff - create diffs between HTTP request
+HTTP::Request::Diff - create diffs between HTTP requests
 
 # SYNOPSIS
 
@@ -99,3 +99,29 @@ Performs the diff and returns an array of hashrefs with differences.
     # +-----------------+-----------+--------+
 
 Renders a diff as a table, using [Text::Table::Any](https://metacpan.org/pod/Text%3A%3ATable%3A%3AAny).
+
+# REPOSITORY
+
+The public repository of this module is
+[https://github.com/Corion/HTTP-Request-Diff](https://github.com/Corion/HTTP-Request-Diff).
+
+# SUPPORT
+
+The public support forum of this module is [https://perlmonks.org/](https://perlmonks.org/).
+
+# BUG TRACKER
+
+Please report bugs in this module via the Github bug queue at
+[https://github.com/Corion/HTTP-Request-Diff/issues](https://github.com/Corion/HTTP-Request-Diff/issues)
+
+# AUTHOR
+
+Max Maischein `corion@cpan.org`
+
+# COPYRIGHT (c)
+
+Copyright 2023- by Max Maischein `corion@cpan.org`.
+
+# LICENSE
+
+This module is released under the same terms as Perl itself.

@@ -15,7 +15,7 @@ use CGI::Tiny::Multipart 'parse_multipart_form_data';
 
 =head1 NAME
 
-HTTP::Request::Diff - create diffs between HTTP request
+HTTP::Request::Diff - create diffs between HTTP requests
 
 =head1 SYNOPSIS
 
@@ -434,3 +434,33 @@ sub as_table($self,@diff) {
 }
 
 1;
+
+__END__
+
+=head1 REPOSITORY
+
+The public repository of this module is
+L<https://github.com/Corion/HTTP-Request-Diff>.
+
+=head1 SUPPORT
+
+The public support forum of this module is L<https://perlmonks.org/>.
+
+=head1 BUG TRACKER
+
+Please report bugs in this module via the Github bug queue at
+L<https://github.com/Corion/HTTP-Request-Diff/issues>
+
+=head1 AUTHOR
+
+Max Maischein C<corion@cpan.org>
+
+=head1 COPYRIGHT (c)
+
+Copyright 2023- by Max Maischein C<corion@cpan.org>.
+
+=head1 LICENSE
+
+This module is released under the same terms as Perl itself.
+
+=cut
