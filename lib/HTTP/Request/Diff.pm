@@ -24,14 +24,22 @@ HTTP::Request::Diff - create diffs between HTTP request
       #actual    => $req2,
       skip_headers => \@skip,
       ignore_headers => \@skip2,
-      #canonicalize_headers => {},
-      canonicalize => sub($req) { return $req },
-      #canonicalize_requests => sub($ref, $actual){},
-      ignore_header_order => undef,
       mode => 'exact', # default is 'semantic'
   );
 
   my @differences = $diff->diff( $actual );
+  say Dumper $differences[0];
+  # {
+  #   'kind' => 'value',
+  #   'type' => 'query.foo',
+  #   'reference' => [
+  #                    undef
+  #                  ],
+  #   'actual' => [
+  #                 'bar'
+  #               ]
+  # }
+  #
 
 =head1 METHODS
 
