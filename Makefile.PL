@@ -55,6 +55,7 @@ my %module = (
         'List::Util' => 0,
         'HTTP::Request' => 0,
         'CGI::Tiny::Multipart' => 0,
+        'Text::Table::Any' => 0,
     },
     TEST_REQUIRES => {
         'Test2::V0'             => 0,

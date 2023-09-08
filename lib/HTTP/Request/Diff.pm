@@ -369,4 +369,25 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
     return @diff;
 }
 
+=head2 C<< ->as_table( @diff ) >>
+
+  my @diff = $diff->diff( $request1, $request2 );
+  print $diff->as_table( @diff );
+  #
+
+=cut
+
+sub as_table($self,@diff) {
+    require Text::Table::Any;
+
+    if( @diff ) {
+        Text::Table::Any::generate_table(
+            rows => [
+                ['Type', 'Reference', 'Actual'],
+                map {[ $_->{type}, $_->{reference}, $_->{actual} ]} @diff
+            ],
+        );
+    };
+}
+
 1;

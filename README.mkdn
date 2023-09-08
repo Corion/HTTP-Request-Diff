@@ -78,3 +78,9 @@ HTTP::Request::Diff - create diffs between HTTP request
     my @diff = $diff->diff( $actual );
 
 Performs the diff and returns an array of hashrefs with differences.
+
+## `->as_table( @diff )`
+
+    my @diff = $diff->diff( $request1, $request2 );
+    print $diff->as_table( @diff );
+    #
