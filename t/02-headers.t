@@ -183,7 +183,7 @@ Content-Length: 0
 
 
 --- diff
-- kind: value
+- kind: missing
   type: request.header_order
   reference:
   - Content-Length
