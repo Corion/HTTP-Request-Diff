@@ -58,6 +58,10 @@ differences insignificant:
 
 =item * The boundary strings of multipart POST requests
 
+=item * The order of query parameters
+
+=item * The order of form parameters
+
 =back
 
 C<strict> mode wants the requests to be as identical as possible.
