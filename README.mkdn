@@ -78,11 +78,3 @@ HTTP::Request::Diff - create diffs between HTTP request
     my @diff = $diff->diff( $actual );
 
 Performs the diff and returns an array of hashrefs with differences.
-
-# POD ERRORS
-
-Hey! **The above document had some coding errors, which are explained below:**
-
-- Around line 192:
-
-    You forgot a '=back' before '=head2'
