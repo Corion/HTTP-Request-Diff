@@ -199,7 +199,7 @@ sub get_request_header_names( $self, $req ) {
     if( $req =~ /\n/ ) {
         my( $header ) = $req =~ m/^(.*?)\r\n\r\n/ms
             or croak "No header in request <$req>";
-        my @headers = ($header =~ /^([A-Z][A-Za-z\d-]+):/mg);
+        my @headers = ($header =~ /^([A-Za-z][A-Za-z\d-]+):/mg);
         return @headers;
     } else {
         return
