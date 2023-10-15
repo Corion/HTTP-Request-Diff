@@ -299,7 +299,28 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
                     uniq( keys( $ref_params->%* ),
                           keys( $actual_params->%*),
                     );
-        };
+
+        } elsif( $r_actual->headers->content_type eq 'application/x-www-form-urlencoded'
+             and $r_actual->headers->content_type eq 'application/x-www-form-urlencoded'
+        ) {
+            # We've checked the content type already, we can ignore the boundary
+            # value for semantic checks
+            $ignore_diff{ 'headers.Content-Type' } = 1;
+
+            # Handle %20 vs +
+            my $force_percent_encoding = ($r_ref->headers->content_length != $r_actual->headers->content_length);
+
+            if( $force_percent_encoding ) {
+                for my $req ($r_ref, $r_actual) {
+                    my $body = $req->content();
+                    if( $body =~ s!\+!%20!g ) {
+                        $ignore_diff{ 'header.Content-Length' } = 1;
+                        $req->content( $body );
+                    }
+                };
+            };
+
+        }
     };
     my @check = ($self->compare->@*, @headers, @query_params, @form_params);
 
