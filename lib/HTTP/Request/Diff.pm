@@ -197,7 +197,7 @@ sub get_form_parameters( $self, $req ) {
 
 sub get_request_header_names( $self, $req ) {
     if( $req =~ /\n/ ) {
-        my( $header ) = $req =~ m/^(.*?)\r\n\r\n/ms
+        my( $header ) = $req =~ m/^(.*?)\r?\n\r?\n/ms
             or croak "No header in request <$req>";
         my @headers = ($header =~ /^([A-Za-z][A-Za-z\d-]+):/mg);
         return @headers;
@@ -257,6 +257,9 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
     if( ref $actual ) {
         $actual = $actual->as_string("\r\n");
     };
+
+    # XXX warn about \n-delimited input, optionally
+
     my $r_ref = HTTP::Request->parse( $ref );
     my $r_actual = HTTP::Request->parse( $actual );
 
