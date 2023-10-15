@@ -282,11 +282,15 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
         or $self->mode eq 'lax' ) {
 
         if(     $r_ref->headers->content_type eq 'multipart/form-data'
-            and $r_actual->headers->content_type eq 'multipart/form-data' ) {
-
+            and $r_actual->headers->content_type eq 'multipart/form-data'
+        ) {
             # We've checked the content type already, we can ignore the boundary
             # value for semantic checks
             $ignore_diff{ 'headers.Content-Type' } = 1;
+
+            # The content length will likely also differ, as we use different
+            # sizes for the boundary
+            $ignore_diff{ 'headers.Content-Length' } = 1;
 
             $ref_params = $self->get_form_parameters( $r_ref );
             $actual_params = $self->get_form_parameters( $r_actual );
