@@ -70,6 +70,8 @@ differences insignificant:
 
 =item * The order of form parameters
 
+=item * A C<Content-Length: 0> header is equivalent to a missing C<Content-Length> header
+
 =back
 
 C<strict> mode wants the requests to be as identical as possible.
@@ -349,14 +351,26 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
             $actual_v = $self->fetch_value( $r_actual, $p, $actual_params );
         }
 
+        my $type = sprintf( '%s.%s', @$p );
+
         if( (defined $ref_v xor defined $actual_v)) {
             # One is missing
 
-            push @diff, {
-                reference => $ref_v,
-                actual => $actual_v,
-                type => sprintf( '%s.%s', @$p ),
-                kind => 'missing',
+            # semantic/lax: If Content-Length is missing, it is equivalent
+            #               to Content-Length: 0
+
+            if(     ($self->mode eq 'lax' or $self->mode eq 'semantic')
+                and $type eq 'headers.Content-Length'
+                and ($ref_v // 0 )== 0 and ($actual_v // 0) == 0) {
+                    # ignore
+            } else {
+
+                push @diff, {
+                    reference => $ref_v,
+                    actual => $actual_v,
+                    type => $type,
+                    kind => 'missing',
+                };
             };
 
         } elsif( ref $ref_v ) {
