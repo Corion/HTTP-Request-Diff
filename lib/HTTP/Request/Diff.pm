@@ -452,10 +452,11 @@ sub diff( $self, $actual_or_reference, $actual=undef ) {
   print $diff->as_table( @diff );
   # +-----------------+-----------+--------+
   # | Type            | Reference | Actual |
+  # +-----------------+-----------+--------+
   # | request.content | Ümloud    | Umloud |
   # +-----------------+-----------+--------+
 
-Renders a diff as a table, using L<Text::Table::Any>.
+Renders a diff as a table, using L<Term::Table>.
 
 =cut
 
@@ -473,7 +474,7 @@ sub as_table($self,@diff) {
                     ]} @diff
             ],
         );
-        say $_ for $t->render;
+        return join "\n", $t->render;
     };
 }
 
