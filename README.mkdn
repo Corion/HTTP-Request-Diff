@@ -52,6 +52,7 @@ HTTP::Request::Diff - create diffs between HTTP requests
     - The boundary strings of multipart POST requests
     - The order of query parameters
     - The order of form parameters
+    - A `Content-Length: 0` header is equivalent to a missing `Content-Length` header
 
     `strict` mode wants the requests to be as identical as possible.
     `lax` mode considers query parameters in the POST body as equivalent.
