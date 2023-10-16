@@ -460,18 +460,20 @@ Renders a diff as a table, using L<Text::Table::Any>.
 =cut
 
 sub as_table($self,@diff) {
-    require Text::Table::Any;
+    require Term::Table;
 
     if( @diff ) {
-        Text::Table::Any::generate_table(
+        my $t = Term::Table->new(
+            allow_overflow => 1,
+            header => ['Type', 'Reference', 'Actual'],
             rows => [
-                ['Type', 'Reference', 'Actual'],
                 map {[ $_->{type},
                        ref $_->{reference} ? join "\n", map { $_ // '<missing>' } $_->{reference}->@* : $_->{reference} // '<missing>',
                        ref $_->{actual} ? join "\n", map { $_ // '<missing>' } $_->{actual}->@* : $_->{actual} // '<missing>',
                     ]} @diff
             ],
         );
+        say $_ for $t->render;
     };
 }
 
